@@ -96,12 +96,20 @@ ORDER BY total_win DESC;
 
 
 -- For the year 2016 get the extra runs conceded per team.
-SELECT bowler,
-       ROUND(SUM(total_runs - bye_runs - legbye_runs) * 6 /
-       SUM(wide_runs = 0 AND noball_runs = 0), 2) AS economy
+SELECT bowling_team, SUM(extra_runs) AS extra_runs_conceded
 FROM deliveries
-JOIN matches ON deliveries.match_id = matches.id
+JOIN matches
+ON deliveries.match_id = matches.id
 WHERE matches.season = 2016
+GROUP BY bowling_team
+ORDER BY extra_runs_conceded DESC;
+
+-- For the year 2015 get the top economical bowlers.
+SELECT bowler, SUM(total_runs - bye_runs - legbye_runs) * 6 / SUM(wide_runs = 0 AND noball_runs = 0) AS economy
+FROM deliveries
+JOIN matches
+ON deliveries.match_id = matches.id
+WHERE matches.season = 2015
 GROUP BY bowler
 ORDER BY economy
 LIMIT 10;
